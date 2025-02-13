@@ -13,15 +13,13 @@ const initialBlogs = [
     'title': 'How to cook',
     'author': 'Joe',
     'url': 'http://abc.gov',
-    'likes': 3,
-    'id': '67acf9dec545ae94b4f28701'
+    'likes': 3
   },
   {
     'title': 'BBBB',
     'author': 'Joe',
     'url': 'http://123.gov',
-    'likes': 2,
-    'id': '67ad1ade6d34348dfc38048f'
+    'likes': 2
   }
 ]
 

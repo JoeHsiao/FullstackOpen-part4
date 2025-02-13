@@ -6,7 +6,7 @@ const app = require('../app')
 const Blog = require('../models/blog')
 const api = supertest(app)
 const helper = require('../utils/list_helper')
-
+const logger = require('../utils/logger')
 
 beforeEach(async () => {
   await Blog.deleteMany()
@@ -45,6 +45,22 @@ test('blog is added to database', async () => {
   const titles = response.body.map(b => b.title)
   assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
   assert.strictEqual(titles.includes(newBlog.title), true)
+})
+
+test('blog is removed from database', async () => {
+  let response = await api.get('/api/blogs')
+  const idToDelete = response.body.map(b => b.id)[0]
+  logger.info('id to delete', idToDelete)
+
+  await api
+    .delete(`/api/blogs/${idToDelete}`)
+    .expect(204)
+
+  response = await api.get('/api/blogs')
+  const ids = response.body.map(b => b.id)
+  logger.info('remaining ids', ids)
+  assert.strictEqual(ids.includes(idToDelete), false)
+  assert.strictEqual(ids.length, helper.initialBlogs.length - 1)
 })
 
 after(async () => {
