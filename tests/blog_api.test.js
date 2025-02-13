@@ -25,7 +25,7 @@ test('blogs are returned as json', async () => {
 
 test('blogs have id field instead of _id', async () => {
   const response = await api.get('/api/blogs')
-  assert(response.body.every(blog => 'id' in blog && !('_id' in blog)))
+  assert.strictEqual(response.body.every(blog => 'id' in blog && !('_id' in blog)), true)
 })
 
 test('blog is added to database', async () => {
@@ -43,8 +43,8 @@ test('blog is added to database', async () => {
 
   const response = await api.get('/api/blogs')
   const titles = response.body.map(b => b.title)
-  assert(response.body.length, helper.initialBlogs.length + 1)
-  assert(titles.includes(newBlog.title))
+  assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+  assert.strictEqual(titles.includes(newBlog.title), true)
 })
 
 after(async () => {
