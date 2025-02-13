@@ -22,8 +22,18 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     logger.error(error)
     next(error)
   }
-
   response.status(204).send()
+})
+
+blogsRouter.put('/:id', async (request, response, next) => {
+  const updatedBlog = request.body
+  try {
+    const returnedBlog = await Blog.findByIdAndUpdate(request.params.id, updatedBlog, { new: true })
+    response.json(returnedBlog)
+  } catch (error) {
+    logger.error('exception from put', error.message)
+    next(error)
+  }
 })
 
 module.exports = blogsRouter

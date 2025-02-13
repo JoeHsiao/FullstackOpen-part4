@@ -63,6 +63,22 @@ test('blog is removed from database', async () => {
   assert.strictEqual(ids.length, helper.initialBlogs.length - 1)
 })
 
+test('blog has updated likes', async () => {
+  let response = await api.get('/api/blogs')
+  const updatedBlog = response.body[0]
+  updatedBlog.likes += 1
+  const id = updatedBlog.id
+
+  await api
+    .put(`/api/blogs/${id}`)
+    .send(updatedBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  response = await api.get('/api/blogs')
+  const returnedBlog = response.body.find(b => b.id === id)
+  assert.strictEqual(returnedBlog.likes, updatedBlog.likes)
+})
 after(async () => {
   await mongoose.connection.close()
 })
