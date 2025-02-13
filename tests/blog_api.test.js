@@ -23,9 +23,28 @@ test('blogs are returned as json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
-test('blogs have id field', async () => {
+test('blogs have id field instead of _id', async () => {
   const response = await api.get('/api/blogs')
   assert(response.body.every(blog => 'id' in blog && !('_id' in blog)))
+})
+
+test('blog is added to database', async () => {
+  const newBlog = {
+    'title': 'test new blog',
+    'author': 'supertest',
+    'url': 'xxx.abc.123',
+    'likes': 4
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const titles = response.body.map(b => b.title)
+  assert(response.body.length, helper.initialBlogs.length + 1)
+  assert(titles.includes(newBlog.title))
 })
 
 after(async () => {
