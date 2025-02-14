@@ -4,7 +4,7 @@ const logger = require('../utils/logger')
 const bcrypt = require('bcrypt')
 
 usersRouter.get('/', async (request, response) => {
-  const result = await Users.find({})
+  const result = await Users.find({}).populate('blogs', { title: 1, author: 1, url: 1, id: 1 })
   response.status(200).json(result)
 })
 
