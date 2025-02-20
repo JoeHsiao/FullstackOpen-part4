@@ -5,6 +5,7 @@ const logger = require('../utils/logger')
 const jwt = require('jsonwebtoken')
 
 const getTokenFrom = request => {
+  console.log('getToekenFro', request)
   const authorization = request.get('authorization')
   if (authorization && authorization.startsWith('Bearer ')) {
     return authorization.replace('Bearer ', '')
@@ -25,7 +26,7 @@ blogsRouter.post('/', async (request, response) => {
   const user = await User.findById(decodedToken.id)
 
   logger.info('user', user)
-  const blog = new Blog({ ...request.body, user: user.id })
+  const blog = new Blog({ ...request.body, user: user, likes: request.body.likes | 0 })
   const savedBlog = await blog.save()
 
   user.blogs = user.blogs.concat(savedBlog._id)
