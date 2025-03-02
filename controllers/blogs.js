@@ -18,6 +18,23 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  console.log('id', request.params.id)
+  const blog = await Blog.findById(request.params.id)
+  if (!blog) {
+    return response.status(404).json({ error: 'blog not found' })
+  }
+  const comment = request.body.content
+  console.log('insert comment', comment)
+  console.log('blog', blog)
+  blog.comments.push(comment)
+
+  // const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+  const updatedBlog = await blog.save()
+
+  response.json(updatedBlog)
+})
+
 blogsRouter.post('/', async (request, response) => {
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
   if (!decodedToken.id) {
